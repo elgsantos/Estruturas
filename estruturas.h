@@ -188,3 +188,99 @@ int val(char c){//converte de caracter para inteiro
     else if(c=='9')return 9;
     else return 0;
 }
+
+typedef struct listaDupla{
+    int info;
+    struct listaDupla *prox;
+    struct listaDupla *ant;
+}listaDupla;
+
+typedef struct circular{
+    listaDupla* ini;
+    listaDupla* aux;
+    listaDupla* fim;
+}Circ;
+
+Circ* circ_cria(){                          //Inicializa círculo
+    Circ *f=(Circ*)malloc(sizeof(Circ));
+	f->aux = f->ini = f->fim = NULL;
+	return f;
+}
+void circ_imprime(Circ *f){
+    listaDupla *t;
+    int n=1;
+    for(t=f->ini;t!=f->fim;t=t->prox){
+        printf("\tSoldado %d: %d\n",n,t->info);
+        n++;
+    }
+    printf("\tSoldado %d: %d\n",n,t->info);
+}
+void circ_push(Circ *f,int x){
+    listaDupla *n = (listaDupla*)malloc(sizeof(listaDupla)),*t;
+
+    n->info = x;
+
+    if(f->fim != NULL)
+    	f->fim->prox = n;
+    else
+    	f->ini = n;
+    t = f->fim;                         //variável do tipo listaDupla segura valor anterior ao fim
+    f->fim = n;
+    f->fim->ant = t;
+    f->ini->ant = f->fim;               //anterior do início recebe o final da listaDupla
+    f->aux = n->prox = f->ini;          //próximo valor após final da listaDupla recebe o inicio da listaDupla
+}
+int circ_vazia(Circ* f){
+    if(f->fim==NULL)
+        return 1;
+    else
+        return 0;
+}
+int circ_pop(Circ *f){
+    listaDupla *t;
+    int x;
+    if (circ_vazia(f)){
+    	printf("lista vazia.\n");
+    	exit (1);
+	}
+	t = f->aux;
+	x = t->info;
+	//printf("\n %d\n",t->prox->info);
+	t->ant->prox = f->aux = t->prox;      //Valor atual é tirado da listaDupla
+	t->prox->ant = t->ant;
+
+	if(f->fim==f->ini){                   //Se o último valor é retirado, então temos uma listaDupla vazia
+		f->aux=NULL;
+		f->fim=NULL;
+		f->ini=NULL;
+	}
+	if(t==f->fim)                         //Se o valor atual retirado for igual ao fim ou início da listaDupla, então seu valor é
+        f->fim = f->fim->ant;             //atualizado
+    if(t==f->ini)
+        f->ini = f->ini->prox;
+	free(t);
+	return x;
+}
+
+void circ_libera(Circ *f){
+	listaDupla *q = f->ini;
+	while(q!=f->fim){
+		listaDupla *t=q->prox;
+		free(q);
+		q=t;
+	}
+	free(f->fim);
+}
+
+int mov_aux(Circ* f,int x){              //Move o auxiliar para a direita
+    int i;
+    for(i=0;i<x;i++)
+        f->aux = f->aux->prox;
+    return f->aux->info;
+}
+int mov_aux_rev(Circ* f,int x){          //Move o auxiliar para a esquerda
+    int i;
+    for(i=0;i<x;i++)
+        f->aux = f->aux->ant;
+    return f->aux->info;
+}
