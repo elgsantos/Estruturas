@@ -18,6 +18,9 @@ Lista * lst_insere(Lista *l,int info){//inclusao de elementos na lista
 }
 void lst_imprime(Lista *l){//imprime os elementos da lista
     Lista *p;//lista auxiliar
+    if(lst_vazia(l)){
+        puts("lista vazia");
+    }
     for(p=l;p!=NULL;p=p->prox)//enquanto p for diferente de null, imprimir a informacao
         printf("-->[%d]",p->info);
 }
@@ -28,6 +31,11 @@ int lst_buscar(Lista *l, int chave){
             return 1;//se encontrado retorna 1 e sai da função
     return 0;//se não encontrado retorna 0
 }
+int lst_vazia(Lista *l){//returna 1 se a lista estiver vazia
+    if(l==NULL)
+        return 1;
+    return 0;
+}
 void lst_libera(Lista* l){//funcao para liberar a lista
     Lista* p = l;
     while (p!=NULL){
@@ -35,6 +43,18 @@ void lst_libera(Lista* l){//funcao para liberar a lista
         free(p);
         p=t;
     }
+}
+int lst_conta(Lista *l){//contar elementos da lista
+    Lista *p;//é criada uma lista auxiliar pois a original foi passada por referencia
+    int cont=0;
+    if(lst_vazia(l)){//verifica se a lista esta vazia
+        return 0;
+    }
+    for(p=l;p!=NULL;p=p->prox)
+        {
+            cont++;//contador é incrementado
+        }
+    return cont;
 }
 
 Lista* separa(Lista* l, int n){//função de separação da lista
